@@ -22,7 +22,10 @@ const CardWrap = ({
   return (
     <Card className='w-[400px] shadow-md'>
       <CardHeader>
+        <div className='text-center'>
         <Header label={headerLabel} />
+
+        </div>
       </CardHeader>
       <CardContent>{children}</CardContent>
       {showSocial&&(
