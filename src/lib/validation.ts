@@ -4,6 +4,13 @@ export const LoginSchema = z.object({
  email:z.string().email({message:"Invalid Email"}),
  password:z.string({required_error:'This field is required'}).min(4,{message:"Need a longer password."})
 })
+export const ResetSchema = z.object({
+ email:z.string().email({message:"Invalid Email"}),
+
+})
+
+
+
 export const RegisterSchema = z.object({
   email: z.string().email({
     message: 'Email is required',
@@ -17,3 +24,4 @@ export const RegisterSchema = z.object({
 })
 export type registerType= z.infer<typeof RegisterSchema>
 export type LoginType= z.infer<typeof LoginSchema>
+export type ResetType = z.infer<typeof ResetSchema>
