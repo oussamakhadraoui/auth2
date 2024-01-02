@@ -17,10 +17,17 @@ import { Button } from '../ui/button'
 import FormError from '../FormError'
 import FormSuccess from '../FormSuccess'
 import { login } from '../../../actions/login'
+import { useSearchParams } from 'next/navigation'
+import Link from 'next/link'
 interface LoginFormProps {}
 
 const LoginForm = ({}: LoginFormProps) => {
   const [isPending, startTransition] = useTransition()
+  const search = useSearchParams()
+  const isAlreadyExist =
+    search.get('error') === 'OAuthAccountNotLinked'
+      ? 'This email is used by a different user try login with another account!'
+      : ''
   const [error, setError] = useState<string | undefined>('')
   const [success, setSuccess] = useState<string | undefined>('')
   const form = useForm<LoginType>({
@@ -82,12 +89,20 @@ const LoginForm = ({}: LoginFormProps) => {
                       type='password'
                     />
                   </FormControl>
+                  <Button
+                    size={'sm'}
+                    variant={'link'}
+                    asChild
+                    className='px-0 font-normal'
+                  >
+                    <Link href='/auth/reset'>Forget password</Link>
+                  </Button>
                   <FormMessage />
                 </FormItem>
               )}
             />
           </div>
-          <FormError message={error} />
+          <FormError message={error || isAlreadyExist} />
           <FormSuccess message={success} />
           <Button type='submit' disabled={isPending} className='w-full'>
             Login
