@@ -4,6 +4,7 @@ import { PrismaClient, UserRole } from '@prisma/client'
 import authConfig from './auth.config'
 import { getUserById } from './components/Data/user'
 import { db } from './lib/db'
+import { getTwoFactorConfirmationByUserId } from './components/Data/twoAuth'
 
 const prisma = new PrismaClient()
 export const {
@@ -35,6 +36,19 @@ export const {
       const existenceUser = await getUserById(user.id)
       //prevent sign inn without email verification
       if (!existenceUser?.emailVerified) return false
+
+      if (existenceUser.isTwoFactorEnabled) {
+        const twoFactorConfirmation = await getTwoFactorConfirmationByUserId(
+          existenceUser.id
+        )
+        if (!twoFactorConfirmation) {
+          return false
+        }
+        await db.twoFactorConfirmation.delete({
+          where: { id: twoFactorConfirmation.id },
+        })
+      }
+
       return true
     },
     async jwt({ token }) {
@@ -42,6 +56,7 @@ export const {
       const user = await getUserById(token.sub)
       if (!user) return token
       token.role = user.role
+      token.isTwoFactorEnabled = user.isTwoFactorEnabled
       return token
     },
 
@@ -51,6 +66,9 @@ export const {
       }
       if (session.user && token.role) {
         session.user.role = token.role as UserRole
+      }
+      if (session.user) {
+        session.user.isTwoFactorEnabled = token.isTwoFactorEnabled as boolean
       }
       return session
     },
