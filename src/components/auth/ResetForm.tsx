@@ -16,7 +16,6 @@ import { Input } from '../ui/input'
 import { Button } from '../ui/button'
 import FormError from '../FormError'
 import FormSuccess from '../FormSuccess'
-import { login } from '../../../actions/login'
 import { reset } from '../../../actions/reset'
 
 
