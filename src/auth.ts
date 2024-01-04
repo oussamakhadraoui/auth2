@@ -5,6 +5,7 @@ import authConfig from './auth.config'
 import { getUserById } from './components/Data/user'
 import { db } from './lib/db'
 import { getTwoFactorConfirmationByUserId } from './components/Data/twoAuth'
+import { getAccountByUserId } from './components/Data/account'
 
 const prisma = new PrismaClient()
 export const {
@@ -55,6 +56,10 @@ export const {
       if (!token.sub) return token
       const user = await getUserById(token.sub)
       if (!user) return token
+      const account = await getAccountByUserId(user.id)
+      token.isOAuth = !!account
+      token.name = user.name
+      token.email = user.email
       token.role = user.role
       token.isTwoFactorEnabled = user.isTwoFactorEnabled
       return token
@@ -69,6 +74,9 @@ export const {
       }
       if (session.user) {
         session.user.isTwoFactorEnabled = token.isTwoFactorEnabled as boolean
+        session.user.name = token.name as string
+        session.user.isOAuth = token.isOAuth as boolean
+        session.user.email = token.email as string
       }
       return session
     },
