@@ -6,11 +6,14 @@ import {signIn} from 'next-auth/react'
 import { Button } from '../ui/button'
 
 import { DEFAULT_LOGIN_REDIRECT } from '../../../routes'
+import { useSearchParams } from 'next/navigation'
 interface SocialProps {}
 
 const Social = ({}: SocialProps) => {
+    const searchParams = useSearchParams()
+    const callbackUrl = searchParams.get('callbackUrl')
  const onClick = (social: 'github' | 'google') => {
- signIn(social, { callbackUrl: DEFAULT_LOGIN_REDIRECT })
+ signIn(social, { callbackUrl: callbackUrl || DEFAULT_LOGIN_REDIRECT })
  }
   return (
     <div className='flex items-center w-full gap-x-2'>
