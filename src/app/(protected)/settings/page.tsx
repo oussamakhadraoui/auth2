@@ -31,24 +31,53 @@ import { useCurrentUser } from '@/hooks/useCurrentUser'
 import FormError from '@/components/FormError'
 import FormSuccess from '@/components/FormSuccess'
 import { Card, CardHeader, CardContent } from '@/components/ui/card'
+import { setting } from '../../../../actions/setting'
+import { SettingSchema, typeSettings } from '@/lib/validation'
+import { UserRole } from '@prisma/client'
 interface pageProps {}
 
 const Page = ({}: pageProps) => {
   const user = useCurrentUser()
 
+  const [error, setError] = useState<string | undefined>()
+  const [success, setSuccess] = useState<string | undefined>()
+  const { update } = useSession()
+  const [isPending, startTransition] = useTransition()
+    const form = useForm<typeSettings>({
+      resolver: zodResolver(SettingSchema),
+      defaultValues: {
+        password: undefined,
+        newPassword: undefined,
+        name: user?.name || undefined,
+        email: user?.email || undefined,
+        role: user?.role || undefined,
+        isTwoFactorEnabled: user?.isTwoFactorEnabled || undefined,
+      },
+    })
 
+    const onSubmit = (values: typeSettings) => {
+      startTransition(() => {
+        setting(values)
+          .then((data) => {
+            if (data.error) {
+              setError(data.error)
+            }
 
-    const [error, setError] = useState<string | undefined>()
-    const [success, setSuccess] = useState<string | undefined>()
-    const { update } = useSession()
-    const [isPending, startTransition] = useTransition()
+            if (data.success) {
+              update()
+              setSuccess(data.success)
+            }
+          })
+          .catch(() => setError('Something went wrong!'))
+      })
+    }
   return (
     <Card className='w-[600px]'>
       <CardHeader>
         <p className='text-2xl font-semibold text-center'>⚙️ Settings</p>
       </CardHeader>
       <CardContent>
-        {/* <Form {...form}>
+        <Form {...form}>
           <form className='space-y-6' onSubmit={form.handleSubmit(onSubmit)}>
             <div className='space-y-4'>
               <FormField
@@ -181,7 +210,7 @@ const Page = ({}: pageProps) => {
               Save
             </Button>
           </form>
-        </Form> */}
+        </Form>
       </CardContent>
     </Card>
   )
