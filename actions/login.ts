@@ -13,7 +13,7 @@ import {
 import { getTwoFactorConfirmationByUserId, getTwoFactorTokenByEmail } from '@/components/Data/twoAuth'
 import { db } from '@/lib/db'
 
-export const login = async (values: LoginType) => {
+export const login = async (values: LoginType, callbackUrl?:string|null) => {
   const validation = LoginSchema.safeParse(values)
   if (!validation.success) {
     return { error: 'Invalid fields' }
@@ -46,20 +46,23 @@ export const login = async (values: LoginType) => {
         return { error: 'expired Token' }
       }
       await db.twoFactorToken.delete({
-        where:{
-          id:twoFactToken.id
-        }
+        where: {
+          id: twoFactToken.id,
+        },
       })
-      const existenceConfirmation = await getTwoFactorConfirmationByUserId(existenceUser.id)
-      if(existenceConfirmation){
+      const existenceConfirmation = await getTwoFactorConfirmationByUserId(
+        existenceUser.id
+      )
+      if (existenceConfirmation) {
         await db.twoFactorConfirmation.delete({
-          where:{id:existenceConfirmation.id}
+          where: { id: existenceConfirmation.id },
         })
       }
-      await db.twoFactorConfirmation.create({data:{
-        userId:existenceUser.id
-      }})
-      
+      await db.twoFactorConfirmation.create({
+        data: {
+          userId: existenceUser.id,
+        },
+      })
     } else {
       const twoFactorToken = await generateTwoFactorToken(existenceUser.email)
       await sendTwoFactorTokenEmail(twoFactorToken.email, twoFactorToken.token)
@@ -70,9 +73,9 @@ export const login = async (values: LoginType) => {
     await signIn('credentials', {
       email,
       password,
-      redirectTo: DEFAULT_LOGIN_REDIRECT,
+      redirectTo:callbackUrl|| DEFAULT_LOGIN_REDIRECT,
     })
-    return { success: 'login sucess' }
+    return { success: 'login success' }
   } catch (error) {
     if (error instanceof AuthError) {
       if (error.type === 'CredentialsSignin') {
