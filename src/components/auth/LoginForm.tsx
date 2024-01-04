@@ -24,6 +24,11 @@ interface LoginFormProps {}
 const LoginForm = ({}: LoginFormProps) => {
   const [isPending, startTransition] = useTransition()
   const search = useSearchParams()
+    const callbackUrl = search.get('callbackUrl')
+    const urlError =
+      search.get('error') === 'OAuthAccountNotLinked'
+        ? 'Email already in use with different provider!'
+        : ''
   const isAlreadyExist =
     search.get('error') === 'OAuthAccountNotLinked'
       ? 'This email is used by a different user try login with another account!'
@@ -43,7 +48,7 @@ const LoginForm = ({}: LoginFormProps) => {
     setError('')
     setSuccess('')
     startTransition(() => {
-      login(values)
+      login(values,callbackUrl)
         .then((data) => {
           if (data.error) {
             form.reset()
@@ -91,7 +96,7 @@ const LoginForm = ({}: LoginFormProps) => {
             )}
             {!show2fact && (
               <>
-                {' '}
+    
                 <FormField
                   name='email'
                   control={form.control}
