@@ -8,7 +8,6 @@ import { getUserByEmail } from './components/Data/user'
 
 import type { NextAuthConfig } from 'next-auth'
 
-
 export default {
   providers: [
     GoogleProvider({
@@ -37,4 +36,15 @@ export default {
       },
     }),
   ],
+  cookies: {
+    pkceCodeVerifier: {
+      name: 'next-auth.pkce.code_verifier',
+      options: {
+        httpOnly: true,
+        sameSite: 'none',
+        path: '/',
+        secure: true,
+      },
+    },
+  },
 } satisfies NextAuthConfig

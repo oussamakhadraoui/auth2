@@ -1,11 +1,9 @@
 import ErrorCard from '@/components/auth/ErrorCard'
 import React from 'react'
 
-interface pageProps {
-  
-}
 
-const page = ({}: pageProps) => {
+
+const page = () => {
   return <ErrorCard/>
 }
 
