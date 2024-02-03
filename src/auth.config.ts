@@ -1,6 +1,6 @@
 import Credentials from 'next-auth/providers/credentials'
 import Github from 'next-auth/providers/github'
-import Google from 'next-auth/providers/google'
+import GoogleProvider from 'next-auth/providers/google'
 
 import { LoginSchema } from './lib/validation'
 import bcrypt from 'bcryptjs'
@@ -11,7 +11,7 @@ import type { NextAuthConfig } from 'next-auth'
 
 export default {
   providers: [
-    Google({
+    GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     }),
