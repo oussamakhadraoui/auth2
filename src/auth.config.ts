@@ -36,6 +36,7 @@ export default {
       },
     }),
   ],
+  secret: process.env.AUTH_SECRET,
   cookies: {
     pkceCodeVerifier: {
       name: 'next-auth.pkce.code_verifier',
