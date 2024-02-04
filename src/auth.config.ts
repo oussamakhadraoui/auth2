@@ -13,10 +13,12 @@ export default {
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      client: { token_endpoint_auth_method: 'none' },
     }),
     Github({
       clientId: process.env.GITHUB_CLIENT_ID,
       clientSecret: process.env.GITHUB_CLIENT_SECRET,
+      client: { token_endpoint_auth_method: 'none' },
     }),
     Credentials({
       async authorize(credentials) {
