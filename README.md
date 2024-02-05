@@ -41,7 +41,7 @@ Key Features:
 ### Cloning the repository
 
 ```shell
-git clone https://github.com/AntonioErdeljac/next-auth-v5-advanced-guide.git
+git clone https://github.com/oussamakhadraoui/auth2.git
 ```
 
 ### Install packages
@@ -54,16 +54,21 @@ npm i
 
 
 DATABASE_URL= you can use neon db to get a free postgres database
+
 AUTH_SECRET= "here you need to write a very powerful secret u can use a sha256 generator "
+
 GITHUB_CLIENT_ID=
 GITHUB_CLIENT_SECRET=
+
 You can go to the settings in github and choose the dev section get your ID and SECRET and paste it here
 
 GOOGLE_CLIENT_ID=
 GOOGLE_CLIENT_SECRET=
+
 tou can go to the google console and generate a new identification
 
 RESEND_API_KEY=  just create a resend account and create an API KEY
+
 NEXT_PUBLIC_APP_URL="http://localhost:3000"  or use the deployement url
 
 
